@@ -1,0 +1,73 @@
+node works on events, its a single threaded model
+like:
+request
+connection
+close
+setTimeout
+
+req.params-route params in Url
+req.query-query string param
+req.get()-get header value
+req.cookies-cookie objecs(requires middleware)
+req.body-parsed body(")
+req.is()-test content type of request body
+req.accepts()-content negotiation for response
+req.url - Url that matched current route(minus mount point)
+req.originalUrl-original Url as sent by client
+req.protocol-http or https
+req.secure-true if protocol is https
+req.host-value in Host header
+req.subdomains-subdomains of host
+req.path-path in Url
+req.xhr-true if X-Requested with: XMLHttpRequest
+
+Many ways to respond to requests
+
+res.set()-set response headers
+res.cookie() and res.clearCookie()- modify response cookie
+res.redirect()-issue 301 and 302 redirect to Url
+res.send()-write status with string/Buffer/Object/Array
+res.json()-stringify Javascript Value 
+res.josonp()-send javascript value to call back function
+
+Middleware are just functions
+-invoked in the order they're app.used()'ed
+-route callback functions are just middleware that terminate requests
+-middleware that don't generate reponses must call next() or requests will never end! 
+
+//simple logging middleware:
+app.use(functions (req, res, next){
+	console.log(req.method + ' ' + req.url + ' ' + 	(new Date()));
+	next();
+});
+
+error handlers are middlewares functions with 4 arguments instead of the normal 3
+-first argument is error
+
+When next() is called with error, all subsequent middleware skipped
+-except error handlers
+
+app.use(function(err, req, res, next) //names not imp like err or res etc.
+	res.status(err.status || 500);
+	res.render('error', {
+		message: err.message,
+		error: err
+	});
+});
+
+
+Structuring large applications
+
+divide applications into cohesive modules
+-export an express.Router for each module
+-routers are middleware
+-require() and app.use() routers in main module
+
+var express = require('express');
+var router = express.Router();
+
+router.get('/', functions(req, res){
+	//...
+});
+//...
+module.exports = router;
