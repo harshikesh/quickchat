@@ -1,7 +1,9 @@
 var http = require('http'),
     fs = require('fs');
  
-var port = Number(process.env.PORT || 1337);
+//var port = Number(process.env.PORT || 1337);
+var port =  process.env.OPENSHIFT_NODEJS_PORT || 1337;
+var address =  process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1"; 
 var app = http.createServer(function (request, response) {
     fs.readFile("index.html", 'utf-8', function (error, data) {
         response.writeHead(200, {'Content-Type': 'text/html'});
